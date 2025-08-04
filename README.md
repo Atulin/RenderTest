@@ -29,7 +29,7 @@ Performance comparison between Blazor components, Razor Slices, and plain JSON
 
 ## Test conclusions
 
-![img.png](images/img.png)
+![img.png](/images/img.png)
 
 * On average, Blazor is **0.12 ms** slower than Slices, and Slices are **0.29 ms** slower than plain JSON
 * The best scenario for all endpoints was just **1 ms**
