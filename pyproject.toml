@@ -1,0 +1,8 @@
+[project]
+name = "rendertest"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "locust>=2.37.14",
+]

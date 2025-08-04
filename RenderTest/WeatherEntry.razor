@@ -1,0 +1,18 @@
+﻿<div class="weather">
+    <h3>@Weather.Summary</h3>
+    <h2>@Weather.Temperature</h2>
+    <p>@Weather.Date</p>
+    <p>@Weather.City, @Weather.Country <code>(@Weather.Location.Latitude, @Weather.Location.Longitude)</code></p>
+    <h5>Users near you:</h5>
+    <ul>
+        @foreach (var user in Weather.Users)
+        {
+            <li>@user.Name</li>
+            <img src="@user.Avatar" alt="@user.Name's avatar" />
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter] public required WeatherForecast Weather { get; init; }
+}

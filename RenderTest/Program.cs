@@ -1,8 +1,13 @@
+using Bogus;
+using Microsoft.AspNetCore.Http.HttpResults;
+using RenderTest;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddRazorComponents();
 
 var app = builder.Build();
 
@@ -14,27 +19,46 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-	"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+var weathers = new[] { "Sunny", "Overcast", "Rainy", "Snowy", "Windy", "Foggy", "Thunderstorm", "Clear", "Cloudy", "Partly Cloudy" };
 
-app.MapGet("/weatherforecast", () => {
-		var forecast = Enumerable.Range(1, 5).Select(index =>
-				new WeatherForecast
-				(
-					DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-					Random.Shared.Next(-20, 55),
-					summaries[Random.Shared.Next(summaries.Length)]
-				))
-			.ToArray();
-		return forecast;
-	})
-	.WithName("GetWeatherForecast");
+Randomizer.Seed = new Random(1337);
+
+var testLatLong = new Faker<LatLong>()
+	.CustomInstantiator(f => new LatLong(
+		f.Address.Latitude(),
+		f.Address.Longitude()
+	));
+
+var testUser = new Faker<User>()
+	.CustomInstantiator(f => new User(
+		f.Name.FullName(),
+		f.Internet.Avatar()
+	));
+
+var testWeather = new Faker<WeatherForecast>()
+	.CustomInstantiator(f => new WeatherForecast(
+		f.Date.Past(),
+		f.Random.Number(-30, 40),
+		f.Address.Country(),
+		f.Address.City(),
+		f.PickRandom(weathers),
+		testLatLong.Generate(),
+		testUser.Generate(f.Random.Number(3, 10))
+	));
+
+var forecast = app.MapGroup("/forecast");
+forecast.MapGet("json", () => testWeather.Generate());
+forecast.MapGet("blazor", () => {
+	var data = testWeather.Generate();
+	return new RazorComponentResult<WeatherEntry>(new { Weather = data });
+});
+forecast.MapGet("slice", () => Results.Extensions.RazorSlice<RenderTest.Slices.WeatherEntry, WeatherForecast>(testWeather.Generate()));
+
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-	public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+public record WeatherForecast(DateTime Date, int Temperature, string Country, string City, string Summary, LatLong Location, List<User> Users);
+
+public record LatLong(double Latitude, double Longitude);
+
+public record User(string Name, string Avatar);

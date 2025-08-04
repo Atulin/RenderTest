@@ -1,0 +1,16 @@
+﻿@inherits RazorSliceHttpResult<WeatherForecast>
+
+<div class="weather">
+    <h3>@Model.Summary</h3>
+    <h2>@Model.Temperature</h2>
+    <p>@Model.Date</p>
+    <p>@Model.City, @Model.Country <code>(@Model.Location.Latitude, @Model.Location.Longitude)</code></p>
+    <h5>Users near you:</h5>
+    <ul>
+        @foreach (var user in @Model.Users)
+        {
+            <li>@user.Name</li>
+            <img src="@user.Avatar" alt="@user.Name's avatar" />
+        }
+    </ul>
+</div>

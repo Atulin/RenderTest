@@ -1,6 +1,14 @@
 @RenderTest_HostAddress = http://localhost:5123
 
-GET {{RenderTest_HostAddress}}/weatherforecast/
+GET {{RenderTest_HostAddress}}/forecast/json/
 Accept: application/json
 
 ###
+
+GET {{RenderTest_HostAddress}}/forecast/blazor/
+Accept: text/html
+
+###
+
+GET {{RenderTest_HostAddress}}/forecast/slice/
+Accept: text/html
