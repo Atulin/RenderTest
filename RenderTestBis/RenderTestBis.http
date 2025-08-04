@@ -1,0 +1,6 @@
+@RenderTestBis_HostAddress = http://localhost:5258
+
+GET {{RenderTestBis_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

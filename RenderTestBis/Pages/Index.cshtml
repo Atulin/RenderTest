@@ -1,0 +1,42 @@
+﻿@page
+@model RenderTestBis.Pages.Index
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>Weather</title>
+    <link rel="stylesheet" href="~/style.css"/>
+</head>
+<body>
+<div>
+    <h1>Weather</h1>
+    
+    <main>
+        @foreach (var weather in Model.WeatherForecast)
+        {
+            <div class="weather"> 
+                <h3 class="summary">@weather.Summary</h3>
+                <h2 class="temp">@weather.Temperature&deg;C</h2>
+                <span class="date">@weather.Date.ToString("dd MMMM, HH:mm")</span>
+                <span class="place">@weather.City, @weather.Country <code>(@weather.Location.Latitude, @weather.Location.Longitude)</code></span>
+                <div class="users">
+                    <h5 class="title">Users near you:</h5>
+                    <ul class="list">
+                        @foreach (var user in weather.Users)
+                        {
+                            <li class="user">
+                                <span>@user.Name</span>
+                                <img src="@user.Avatar" alt="@user.Name's avatar" />
+                            </li>
+                            
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </main>
+    
+</div>
+</body>
+</html>
